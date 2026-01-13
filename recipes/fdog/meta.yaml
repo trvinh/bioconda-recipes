@@ -1,0 +1,80 @@
+{% set name = "fdog" %}
+{% set version = "1.1.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 920f489051565bf2f237100230000380dbee039c79d25357db9df9e8e4543b44
+
+build:
+  run_exports:
+    - {{ pin_subpackage('fdog', max_pin="x.x") }}
+  entry_points:
+    - fdog.run = fdog.runSingle:main
+    - fdogs.run = fdog.runMulti:main
+    - fdog.setup = fdog.setupfDog:main
+    - fdog.checkData = fdog.checkData:main
+    - fdog.addTaxon = fdog.addTaxon:main
+    - fdog.addTaxa = fdog.addTaxa:main
+    - fdog.showTaxa = fdog.showTaxa:main
+    - fdog.setPaths = fdog.setPaths:main
+    - fdog.mergeOutput = fdog.mergeOutput:main
+    - fdog.uninstall = fdog.removefDog:main
+    - fdog.assembly = fdog.fDOGassembly:main
+    - fdog.addAssembly = fdog.addAssembly:main
+    - fdog.addCoreGroup = fdog.makeCoreGroupFromFasta:main
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  host:
+    - python >=3.12
+    - pip
+  run:
+    - python >=3.12
+    - biopython
+    - tqdm
+    - ete4
+    - six
+    - pyyaml
+    - pyhmmer
+    - pysam
+    - pandas
+    - greedyfas >=1.11.2
+
+test:
+  imports:
+    - fdog
+  commands:
+    - pip check
+    - fdog.run --help
+    - fdogs.run --help
+    - fdog.setup --help
+    - fdog.checkData --help
+    - fdog.addTaxon --help
+    - fdog.addTaxa --help
+    - fdog.showTaxa --help
+    - fdog.setPaths --help
+    - fdog.mergeOutput --help
+    - fdog.uninstall --help
+    - fdog.assembly --help
+    - fdog.addAssembly --help
+    - fdog.addCoreGroup --help
+  requires:
+    - pip
+
+about:
+  home: https://github.com/BIONF/fDOG
+  summary: Feature-aware Directed OrtholoG search tool
+  license: GPL-3.0-or-later
+  license_file: LICENSE
+
+extra:
+  recipe-maintainers:
+    - VinhTran
+  identifiers:
+    - doi:10.1093/molbev/msaf120
